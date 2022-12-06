@@ -20,9 +20,9 @@ module RemoteLock::Adapters
       # it's important to still run a transaction to clear the watch.
       have_competition = @connection.respond_to?(:exists?) ? @connection.exists?(key) : @connection.exists(key)
 
-      !! @connection.multi do
+      !! @connection.multi do |conn|
         break if have_competition
-        @connection.setex(key, expires_in_seconds, uid)
+        conn.setex(key, expires_in_seconds, uid)
       end
     end
 
